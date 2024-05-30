@@ -24,9 +24,9 @@ Run `update_compass` function on CompetitionArb Vyper smart contract to update t
 
 Run `set_winner_list` function on CompetitionArb Vyper smart contract to set the winner list of the current epoch.
 
-| Key          | Type            | Description                |
-|--------------|-----------------|----------------------------|
-| winner_infos | Vec<WinnerInfo> | Array of WinnerInfo struct |
+| Key          | Type                   | Description                |
+|--------------|------------------------|----------------------------|
+| winner_infos | Vec&lt;WinnerInfo&gt;  | Array of WinnerInfo struct |
 
 ## QueryMsg
 
