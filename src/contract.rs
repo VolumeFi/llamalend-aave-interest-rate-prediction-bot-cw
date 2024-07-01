@@ -54,6 +54,10 @@ pub fn execute(
         ExecuteMsg::SetWinnerList { winner_infos } => {
             execute::set_winner_list(deps, env, info, winner_infos)
         }
+        ExecuteMsg::SetWinnerAsset {
+            epoch_id,
+            token_asset,
+        } => execute::set_winner_asset(deps, info, epoch_id, token_asset),
     }
 }
 
@@ -151,6 +155,65 @@ pub mod execute {
                 metadata: state.metadata,
             }))
             .add_attribute("action", "update_compass"))
+    }
+
+    pub fn set_winner_asset(
+        deps: DepsMut,
+        info: MessageInfo,
+        epoch_id: Uint256,
+        token_asset: String,
+    ) -> Result<Response<PalomaMsg>, ContractError> {
+        let state = STATE.load(deps.storage)?;
+        if state.owner != info.sender {
+            return Err(Unauthorized {});
+        }
+        let token_asset_address: Address = Address::from_str(token_asset.as_str()).unwrap();
+        #[allow(deprecated)]
+        let contract: Contract = Contract {
+            constructor: None,
+            functions: BTreeMap::from_iter(vec![(
+                "set_winner_asset".to_string(),
+                vec![Function {
+                    name: "set_winner_asset".to_string(),
+                    inputs: vec![
+                        Param {
+                            name: "_epoch_id".to_string(),
+                            kind: ParamType::Uint(256),
+                            internal_type: None,
+                        },
+                        Param {
+                            name: "_token_asset".to_string(),
+                            kind: ParamType::Address,
+                            internal_type: None,
+                        },
+                    ],
+                    outputs: Vec::new(),
+                    constant: None,
+                    state_mutability: StateMutability::NonPayable,
+                }],
+            )]),
+            events: BTreeMap::new(),
+            errors: BTreeMap::new(),
+            receive: false,
+            fallback: false,
+        };
+
+        Ok(Response::new()
+            .add_message(CosmosMsg::Custom(PalomaMsg {
+                job_id: state.job_id,
+                payload: Binary(
+                    contract
+                        .function("set_winner_asset")
+                        .unwrap()
+                        .encode_input(&[
+                            Token::Uint(Uint::from_big_endian(&epoch_id.to_be_bytes())),
+                            Token::Address(token_asset_address),
+                        ])
+                        .unwrap(),
+                ),
+                metadata: state.metadata,
+            }))
+            .add_attribute("action", "set_winner_asset"))
     }
 
     #[allow(clippy::vec_init_then_push)]
