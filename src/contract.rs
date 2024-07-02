@@ -6,7 +6,7 @@ use cw2::set_contract_version;
 use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, GetJobIdResponse, InstantiateMsg, Metadata, PalomaMsg, QueryMsg};
 use crate::state::{State, STATE};
-use cosmwasm_std::CosmosMsg;
+use cosmwasm_std::{CosmosMsg, Uint256};
 use ethabi::{Contract, Function, Param, ParamType, StateMutability, Token, Uint};
 use std::collections::BTreeMap;
 use std::str::FromStr;
@@ -65,7 +65,7 @@ pub mod execute {
     use super::*;
     use crate::msg::WinnerInfo;
     use crate::state::WITHDRAW_TIMESTAMP;
-    use crate::ContractError::{Unauthorized};
+    use crate::ContractError::Unauthorized;
     use ethabi::Address;
 
     pub fn set_paloma(

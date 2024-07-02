@@ -18,11 +18,11 @@ pub struct WinnerInfo {
 #[cw_serde]
 pub enum ExecuteMsg {
     SetPaloma {},
-    UpdateCompass { 
-        new_compass: String 
+    UpdateCompass {
+        new_compass: String,
     },
-    SetWinnerList { 
-        winner_infos: Vec<WinnerInfo> 
+    SetWinnerList {
+        winner_infos: Vec<WinnerInfo>,
     },
     SetWinnerAsset {
         epoch_id: Uint256,
